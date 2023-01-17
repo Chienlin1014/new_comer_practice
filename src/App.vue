@@ -22,6 +22,7 @@
 import AdditionTodo from "@/components/AdditionTodo.vue";
 import TodoList from "@/components/TodoList.vue";
 import DoneList from "@/components/DoneList.vue";
+import axios from "axios";
 
 export default {
   name: 'App',
@@ -37,10 +38,7 @@ export default {
         {key: "action", label: "action", type: "action"}
       ],
       items:{
-        undo:[{todo: '吃飯', done: false},
-          {todo: '睡覺', done: false},
-          {todo: '打掃', done: false}
-        ],
+        undo:[],
         done:[]
       },
       // items: [
@@ -61,12 +59,38 @@ export default {
     AdditionTodo,
     TodoList
   },
+  mounted() {
+    axios.get('http://localhost:8081/getTodos',{
+      params:{
+        isDone:1
+      }
+    }).then((response)=>{
+      this.items.done=response.data
+        }
+    );
+    axios.get('http://localhost:8081/getTodos',{
+      params:{
+        isDone:0
+      }
+    }).then((response)=>{
+          this.items.undo=response.data
+        }
+    );
+  },
   methods: {
     addTodo(thing) {
       this.items.undo.push({todo: thing});
+      axios.post('http://localhost:8081/addTodos',{
+        todo:thing
+      }).then(res=>{
+        console.log(res.data)
+      })
     },
     removeTodo(index) {
       this.items.undo.splice(index, 1);
+      axios.post('http://localhost:8081/deleteTodos',{
+        id:this.items.undo[index].id
+      })
     },
     editConfirm(index, data) {
       this.items.undo.splice(index, 1);
@@ -77,8 +101,6 @@ export default {
       this.items.undo[index].done=event;
       this.items.done.push(this.items.undo[index]);
       this.items.undo.splice(index,1);
-      }else {
-
       }
     },
   }
