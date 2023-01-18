@@ -12,12 +12,12 @@
             variant="outline-danger"
             block @click="comfirmAdd(todoInput)">確定
         </b-button>
-              <b-button
-                  class="mt-2"
-                  variant="outline-warning"
-                  block
-                  @click="addCancel">取消
-              </b-button>
+        <b-button
+            class="mt-2"
+            variant="outline-warning"
+            block
+            @click="addCancel">取消
+        </b-button>
       </div>
     </b-modal>
   </div>
