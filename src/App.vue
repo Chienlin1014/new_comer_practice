@@ -71,6 +71,24 @@ export default {
 
   },
   methods: {
+    getTodo() {
+      axios.get('http://localhost:8081/getTodos', {
+        params: {
+          isDone: 0
+        }
+      }).then((response) => {
+            this.items.undo = response.data
+          }
+      );
+      axios.get('http://localhost:8081/getTodos', {
+        params: {
+          isDone: 1
+        }
+      }).then((response) => {
+            this.items.done = response.data
+          }
+      );
+    },
     forceRender() {
       this.componentsKey++;
     },
@@ -127,9 +145,10 @@ export default {
          todo:this.items.undo[index].todo,
          status:this.items.undo[index].status
         })
-        this.items.done.push(this.items.undo[index]);
-        this.items.undo.splice(index, 1);
-        this.forceRender()
+        this.getTodo();
+        // this.items.done.push(this.items.undo[index]);
+        // this.items.undo.splice(index, 1);
+        // this.forceRender()
       } else {
         this.items.done[index].status = event;
         axios.post('http://localhost:8081/updateTodos',{
@@ -137,9 +156,11 @@ export default {
           todo:this.items.done[index].todo,
           status:this.items.done[index].status
         })
-        this.items.undo.push(this.items.done[index]);
-        this.items.done.splice(index, 1);
-        this.forceRender()
+        this.getTodo();
+        // this.items.undo.push(this.items.done[index]);
+        // this.items.done.splice(index, 1);
+        // this.forceRender()
+
       }
     },
   }

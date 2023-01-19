@@ -5,56 +5,29 @@
         <b-checkbox v-if="field.key === 'selectRow'" :checked="items[value.index].status" :key="index"
                     @change="isDone($event,value.index)"></b-checkbox>
         <div :key="index" v-else-if="field.type === 'action'">
-          <b-button @click="showEditModal(value.index)">修改</b-button>
-          <b-button class="delete-button" variant="danger" @click="showRemoveModal(value.index)">刪除</b-button>
+<!--          <b-button @click="showEditModal(value.index)">修改</b-button>-->
+
+<!--          <b-button class="delete-button" variant="danger" @click="showRemoveModal(value.index)">刪除</b-button>-->
+          <EditModal       :value_index="value.index"
+                           :items="items"
+                           :editConfirm="editConfirm"
+                           :removeTodo="removeTodo"
+                           :isDone="isDone"></EditModal>
         </div>
         <span :key="index" v-else>{{ value.value }}</span>
       </template>
     </b-table>
-    <b-modal ref="edit-modal" hide-footer title="修改待辦事項">
-      <div class="d-block text-center">
-        <label>請輸入修改後之待辦事項：</label>
 
-        <input type="text" v-model="editInput.value">
-      </div>
-      <div>
-        <b-button
-            class="mt-3"
-            variant="outline-danger"
-            block @click="confirmEdit()">確定
-        </b-button>
-        <b-button
-            class="mt-2"
-            variant="outline-warning"
-            block
-            @click="editCancel">取消
-        </b-button>
-      </div>
-    </b-modal>
-    <b-modal ref="remove-modal" hide-footer title="確認刪除待辦事項">
-      <div class="d-block text-center">
-        <label>是否確認刪除？</label>
-      </div>
-      <div>
-        <b-button
-            class="mt-3"
-            variant="outline-danger"
-            block @click="removeConfirm()">確定
-        </b-button>
-        <b-button
-            class="mt-2"
-            variant="outline-warning"
-            block
-            @click="removeCancel">取消
-        </b-button>
-      </div>
-    </b-modal>
   </div>
 </template>
 
 <script>
+import EditModal from "@/components/EditModal.vue";
 export default {
   name: "DoneList",
+  components:{
+    EditModal
+  },
   data() {
     return {
       removeIndex: 0,
