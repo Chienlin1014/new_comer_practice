@@ -17,7 +17,6 @@
         <span :key="index" v-else>{{ value.value }}</span>
       </template>
     </b-table>
-
   </div>
 </template>
 

@@ -24,7 +24,6 @@
     <div class="d-block text-center">
       <label>請輸入修改後之待辦事項：</label>
       <input type="text" v-model="editInput.value">
-
     </div>
     <div>
       <b-button

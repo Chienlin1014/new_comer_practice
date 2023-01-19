@@ -30,11 +30,6 @@ export default {
   name: 'App',
   data() {
     return {
-      componentsKey: 0,
-      editInput: {
-        index: 0,
-        value: ''
-      },
       fields: [
         {key: "selectRow", label: ""},
         {key: "todo", label: "事項", type: "text"},
@@ -71,29 +66,15 @@ export default {
 
   },
   methods: {
-    getTodo() {
-      axios.get('http://localhost:8081/getTodos', {
-        params: {
-          isDone: 0
-        }
-      }).then((response) => {
-            this.items.undo = response.data
-          }
-      );
-      axios.get('http://localhost:8081/getTodos', {
-        params: {
-          isDone: 1
-        }
-      }).then((response) => {
-            this.items.done = response.data
-          }
-      );
-    },
     forceRender() {
       this.componentsKey++;
     },
     addTodo(thing) {
-      this.items.undo.push({todo: thing});
+      this.items.undo.push({
+        todo: thing,
+        status:false,
+        id:(this.items.undo.length+this.items.done.length+1)
+      });
       axios.post('http://localhost:8081/addTodos', {
         todo: thing
       }).then(res => {
@@ -122,8 +103,9 @@ export default {
             status: this.items.done[index].status,
             // updateTime:this.items.undo[index].updateTime
           });
+      this.items.done.push({todo: data, status: true,id:this.items.done[index].id});
       this.items.done.splice(index, 1);
-      this.items.done.push({todo: data, status: true});
+      this.forceRender()
     },
     editConfirmUndo(index, data) {
       axios.post('http://localhost:8081/updateTodos',
@@ -133,33 +115,33 @@ export default {
             status: this.items.undo[index].status,
             // updateTime:this.items.undo[index].updateTime
           });
+      this.items.undo.push({todo: data, status: false,id: this.items.undo[index].id});
       this.items.undo.splice(index, 1);
-      this.items.undo.push({todo: data, status: false});
+      this.forceRender()
+
     },
     isDone(event, index) {
       if (event) {
-        console.log(this.items.undo[index])
         this.items.undo[index].status = event;
-       axios.post('http://localhost:8081/updateTodos',{
-         id:this.items.undo[index].id,
-         todo:this.items.undo[index].todo,
-         status:this.items.undo[index].status
+        axios.post('http://localhost:8081/updateTodos', {
+          id: this.items.undo[index].id,
+          todo: this.items.undo[index].todo,
+          status: this.items.undo[index].status
         })
-        this.getTodo();
-        // this.items.done.push(this.items.undo[index]);
-        // this.items.undo.splice(index, 1);
-        // this.forceRender()
+        this.items.done.push(this.items.undo[index]);
+        this.items.undo.splice(index, 1);
+        this.forceRender()
       } else {
         this.items.done[index].status = event;
-        axios.post('http://localhost:8081/updateTodos',{
-          id:this.items.done[index].id,
-          todo:this.items.done[index].todo,
-          status:this.items.done[index].status
+        axios.post('http://localhost:8081/updateTodos', {
+          id: this.items.done[index].id,
+          todo: this.items.done[index].todo,
+          status: this.items.done[index].status
         })
-        this.getTodo();
-        // this.items.undo.push(this.items.done[index]);
-        // this.items.done.splice(index, 1);
-        // this.forceRender()
+        // this.getTodo();
+        this.items.undo.push(this.items.done[index]);
+        this.items.done.splice(index, 1);
+        this.forceRender()
 
       }
     },
