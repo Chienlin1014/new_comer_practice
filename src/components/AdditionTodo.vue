@@ -35,7 +35,22 @@ export default {
   methods: {
     showAddComfirmModal() {
       if (!this.todoInput.trim()) {
-        alert('待辦事項不得為空白')
+        /*
+          /todos <-- resource
+          POST     /todos
+          GET      /todos/${todoId}  查單一 todo
+          GET      /todos?queryCond1=value1&queryCond2=value2  查多個 todo
+          PUT      /todos/${todoId}  完整的 update
+          PATCH    /todos/${todoId}  partial update
+          DELETE   /todos/${todoId}
+
+          GET /todos/${todoId}/todoDetails
+
+          @GetMapping
+          @PostMapping
+          @PutMapping
+         */        alert('待辦事項不得為空白');
+        
       } else {
         this.$refs["addition-modal"].show();
       }
